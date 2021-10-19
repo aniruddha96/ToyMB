@@ -12,6 +12,12 @@ public class ClientSubscribe implements Serializable{
 	String topicName;
 	
 	String groupName;
+	
+	String type;
+	
+	String ip;
+	
+	int port;
 
 	public String getTopicName() {
 		return topicName;
@@ -27,6 +33,30 @@ public class ClientSubscribe implements Serializable{
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 	
 	

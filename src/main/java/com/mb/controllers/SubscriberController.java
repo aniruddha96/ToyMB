@@ -62,8 +62,12 @@ public class SubscriberController {
 		subscriber.setId(id.toString());
 		subscriber.setGroup(group);
 		subscriber.setCurrentOffset(topic.getCurrentOffset());
-		subscriberRepo.save(subscriber);
+		subscriber.setAlive(true);
+		subscriber.setIp(message.getIp());
+		subscriber.setPort(message.getPort());
+		subscriber.setType(message.getType());
 		
+		subscriberRepo.save(subscriber);
 		group.getSubscribers().add(subscriber);	
 		groupRepo.save(group);
 		

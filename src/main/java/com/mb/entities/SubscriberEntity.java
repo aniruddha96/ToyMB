@@ -22,6 +22,46 @@ public class SubscriberEntity {
 	
 	long currentOffset;
 	
+	String type;
+	
+	String ip;
+	
+	int port;
+	
+	boolean isAlive;
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
+
 	@ElementCollection
 	List<Integer> partitions = new ArrayList<Integer>();
 

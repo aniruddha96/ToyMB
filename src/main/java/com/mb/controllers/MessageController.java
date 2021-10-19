@@ -3,10 +3,14 @@ package com.mb.controllers;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,8 +19,11 @@ import com.mb.common.ClientMessage;
 import com.mb.common.Topic;
 import com.mb.common.TopicEnricher;
 import com.mb.database.Database;
+import com.mb.entities.GroupEntity;
 import com.mb.entities.MessageEntity;
+import com.mb.entities.SubscriberEntity;
 import com.mb.entities.TopicEntity;
+import com.mb.repositories.GroupRepository;
 import com.mb.repositories.MessageRepository;
 import com.mb.repositories.TopicRepository;
 import com.mb.common.EnrichableTopic;
@@ -25,12 +32,23 @@ import com.mb.common.EnrichableTopic;
 public class MessageController {
 
 	ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Autowired
 	MessageRepository messageRepository;
-	
+
 	@Autowired
 	TopicRepository topicRepo;
+
+	@Autowired
+	GroupRepository groupRepo;
+
+	@Autowired
+	RestTemplate template;
+
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.build();
+	}
 
 	@PostMapping("/sendmessage")
 	public String addMessage(@RequestBody ClientMessage clientMessage) throws Exception {
@@ -53,6 +71,20 @@ public class MessageController {
 			TopicEntity topic = topicRepo.findById(clientMessage.getTopicName()).get();
 			topic.setCurrentOffset(entity.getId());
 			topicRepo.save(topic);
+			
+			for(GroupEntity group: groupRepo.getByTopic(topic)) {
+				for(SubscriberEntity subscriber : group.getSubscribers()) {
+					if(subscriber.getPartitions().contains(entity.getPartition())) {
+
+						StringBuilder sb = new StringBuilder("http://").append(subscriber.getIp())
+								.append(":").append(subscriber.getPort()).append("/receivemessage");
+						System.out.println(sb.toString());
+						ResponseEntity<String> ack=template.postForEntity(sb.toString(), entity.getMessage(), String.class);
+						System.out.println(ack);
+					}
+				}
+			}
+			
 			retval = topicMessage.toString();
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
