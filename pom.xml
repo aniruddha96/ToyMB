@@ -9,7 +9,7 @@
 		<version>2.5.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.mb</groupId>
+	<groupId>com.toymb</groupId>
 	<artifactId>ToyMB</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ToyMB</name>
@@ -33,11 +33,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<dependency>
+ 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency> 
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency> 
 	</dependencies>
 
 	<build>

@@ -1,0 +1,65 @@
+package com.toymb.entities;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+
+@Entity
+@Table(name = "messages")
+public class MessageEntity {
+
+	@Id
+    @GeneratedValue
+    private long id;
+	
+	@Column(length = 64)
+	private String topicName;
+	
+	private int partitionNumber;
+	
+	private String message;
+
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getTopicName() {
+		return topicName;
+	}
+
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
+	}
+
+	
+
+	
+
+	public int getPartitionNumber() {
+		return partitionNumber;
+	}
+
+	public void setPartitionNumber(int partitionNumber) {
+		this.partitionNumber = partitionNumber;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	
+	
+}
