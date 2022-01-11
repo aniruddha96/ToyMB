@@ -15,7 +15,7 @@ This is a guide to ToyMB (Toy Message Broker).
 - Internally works with http, new drivers can be implemented easily. 
 
 ## Driver usage
-To interact with ToyMB, import the client jar or copy the classes from 'middleware-driver'.
+To interact with ToyMB, import the client jar or copy the classes from 'java-driver/ToyMB-client'.
 ##### Subscriber
 To subscribe to a topic "topic-name" as a consumer of group "my-group" :
 ```java
