@@ -3,6 +3,7 @@ package com.toymb.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,18 +17,11 @@ public class TopicEntity {
 	int partitions;
 	
 	String className;
-
-	String newCol;
 	
 	long currentOffset;
 	
-	public String getNewCol() {
-		return newCol;
-	}
-
-	public void setNewCol(String newCol) {
-		this.newCol = newCol;
-	}
+	@ManyToOne
+	NodeEntity owner;
 
 	public String getTopicName() {
 		return topicName;
@@ -71,6 +65,14 @@ public class TopicEntity {
 		this.partitions = partitions;
 		this.className = className;
 		this.currentOffset = currentOffset;
+	}
+
+	public NodeEntity getOwner() {
+		return owner;
+	}
+
+	public void setOwner(NodeEntity owner) {
+		this.owner = owner;
 	}
 	
 	

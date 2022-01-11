@@ -10,5 +10,6 @@ public interface MessageRepository extends CrudRepository<MessageEntity,Long>{
 
 	MessageEntity findFirstByIdGreaterThanAndTopicNameAndPartitionNumberInOrderById(long id,String topicName,List<Integer> partitions);
 	
+	MessageEntity findByIdentifier(String identifier);
 	//MessageEntity findByIdGreaterThanAndTopicNameAndPartitionIn(long id,String topicName,List<Integer> partitions);
 }

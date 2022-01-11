@@ -9,6 +9,8 @@ public class ClientSubscribe implements Serializable{
 	 */
 	private static final long serialVersionUID = 8919040202279028769L;
 
+	String id;
+	
 	String topicName;
 	
 	String groupName;
@@ -18,6 +20,8 @@ public class ClientSubscribe implements Serializable{
 	String ip;
 	
 	int port;
+	
+	String requestor;
 
 	public String getTopicName() {
 		return topicName;
@@ -57,6 +61,22 @@ public class ClientSubscribe implements Serializable{
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getRequestor() {
+		return requestor;
+	}
+
+	public void setRequestor(String requestor) {
+		this.requestor = requestor;
 	}
 	
 	

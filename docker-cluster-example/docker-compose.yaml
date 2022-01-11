@@ -1,0 +1,100 @@
+services:
+
+  middleware_db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+    healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 100
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8099:8080
+
+  middleware1:
+    image: toymb
+    container_name: middleware1
+    environment:
+      "spring.datasource.url" : "jdbc:mysql://middleware_db:3306/toymb?createDatabaseIfNotExist=true&useSSL=false"
+      "spring.datasource.username" : "root"
+      "spring.datasource.password" : "password"
+      "spring.datasource.driver-class-name" : "com.mysql.cj.jdbc.Driver"
+      "spring.jpa.hibernate.ddl-auto" : "update"
+      "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5Dialect"
+      "spring.jpa.database-platform" : "org.hibernate.dialect.MySQL5InnoDBDialect"
+      "server.port" : "8080"
+      "node.name" : "middleware1"
+      "topics" : "topic1"
+      "peers" : "middleware2:8080,middleware3:8080"
+    build : 
+      context : ./middleware/ToyMB
+      dockerfile: dockerfile
+    ports:
+      - "8081:8080"
+    restart : always
+    depends_on:
+      middleware_db:
+        condition: service_healthy
+
+  middleware2:
+    image: toymb
+    container_name: middleware2
+    environment:
+      "spring.datasource.url" : "jdbc:mysql://middleware_db:3306/toymb?createDatabaseIfNotExist=true&useSSL=false"
+      "spring.datasource.username" : "root"
+      "spring.datasource.password" : "password"
+      "spring.datasource.driver-class-name" : "com.mysql.cj.jdbc.Driver"
+      "spring.jpa.hibernate.ddl-auto" : "update"
+      "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5Dialect"
+      "spring.jpa.database-platform" : "org.hibernate.dialect.MySQL5InnoDBDialect"
+      "server.port" : "8080"
+      "node.name" : "middleware2"
+      "topics" : "topic2"
+      "peers" : "middleware1:8080,middleware3:8080"
+    build : 
+      context : ./middleware/ToyMB
+      dockerfile: dockerfile
+    ports:
+      - "8082:8080"
+    restart : always
+    depends_on:
+      middleware1:
+        condition: service_healthy
+
+  middleware3:
+    image: toymb
+    container_name: middleware3
+    environment:
+      "spring.datasource.url" : "jdbc:mysql://middleware_db:3306/toymb?createDatabaseIfNotExist=true&useSSL=false"
+      "spring.datasource.username" : "root"
+      "spring.datasource.password" : "password"
+      "spring.datasource.driver-class-name" : "com.mysql.cj.jdbc.Driver"
+      "spring.jpa.hibernate.ddl-auto" : "update"
+      "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5Dialect"
+      "spring.jpa.database-platform" : "org.hibernate.dialect.MySQL5InnoDBDialect"
+      "server.port" : "8080"
+      "node.name" : "middleware3"
+      "topics" : "topic3"
+      "peers" : "middleware1:8080,middleware2:8080"
+    build : 
+      context : ./middleware/ToyMB
+      dockerfile: dockerfile
+    ports:
+      - "8083:8080"
+    restart : always
+    depends_on:
+      middleware2:
+        condition: service_healthy
+
+
+networks:
+  default:
+    driver: bridge

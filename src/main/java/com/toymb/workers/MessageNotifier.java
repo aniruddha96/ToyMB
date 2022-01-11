@@ -39,27 +39,34 @@ public class MessageNotifier implements Runnable {
 		this.groupRepo = groupRepo;
 		this.template = template;
 		this.msgId = msgId;
-		this.subRepo=subRepo;
+		this.subRepo = subRepo;
 	}
 
 	@Override
 	public void run() {
 		MessageEntity msg = messageRepository.findById(msgId).get();
-		TopicEntity topicEntity = topicRepo.findById(msg.getTopicName()).get();
-		for (GroupEntity group : groupRepo.getByTopic(topicEntity)) {
-			SubscriberEntity subscriber = subRepo.getByGroupAndPartitions(group, msg.getPartitionNumber());
-			if (subscriber.getType().contentEquals("push")) {
-				StringBuilder sb = new StringBuilder("http://").append(subscriber.getIp()).append(":")
-						.append(subscriber.getPort()).append("/receivemessage");
-				NotificationMessage sendMessage = new NotificationMessage();
-				sendMessage.setEntity(msg.getMessage());
-				sendMessage.setForSubscriber(subscriber.getId());
-				sendMessage.setMessageId(msg.getId());
-				sendMessage.setTopicName(topicEntity.getTopicName());
-				template.postForEntity(sb.toString(), sendMessage, String.class);
+		if (msg.getStatus().contentEquals("new")) {
+			msg.setStatus("serving");
+			messageRepository.save(msg);
+			TopicEntity topicEntity = topicRepo.findById(msg.getTopicName()).get();
+			for (GroupEntity group : groupRepo.getByTopic(topicEntity)) {
+				SubscriberEntity subscriber = subRepo.getByGroupAndPartitions(group, msg.getPartitionNumber());
+				if (subscriber.getType().contentEquals("push")) {
+
+					StringBuilder sb = new StringBuilder("http://").append(subscriber.getIp()).append(":")
+							.append(subscriber.getPort()).append("/receivemessage");
+					NotificationMessage sendMessage = new NotificationMessage();
+					sendMessage.setEntity(msg.getMessage());
+					sendMessage.setForSubscriber(subscriber.getId());
+					sendMessage.setMessageId(msg.getId());
+					sendMessage.setTopicName(topicEntity.getTopicName());
+					template.postForEntity(sb.toString(), sendMessage, String.class);
+
+				}
 
 			}
-
+			msg.setStatus("done");
+			messageRepository.save(msg);
 		}
 
 	}

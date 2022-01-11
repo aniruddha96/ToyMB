@@ -1,4 +1,4 @@
-package com.mb.common;
+package com.toymb.common;
 
 import java.io.Serializable;
 
